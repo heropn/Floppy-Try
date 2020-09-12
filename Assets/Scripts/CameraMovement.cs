@@ -6,12 +6,12 @@ public class CameraMovement : MonoBehaviour
 {
 	[SerializeField] private Player player;
 
-	private float gameSpeed = 1.0f;
+	private float gameSpeed;
 	private bool isPlaying;
 
 	private void Start()
 	{
-		gameSpeed = GameManager.gameSpeed;
+		gameSpeed = GameManager.instance.gameSpeed;
 		GameManager.instance.onGameStarted += StartGame;
 		GameManager.instance.onGameRestart += RestartGame;
 	}

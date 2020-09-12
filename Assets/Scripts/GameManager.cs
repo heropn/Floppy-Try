@@ -5,12 +5,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-	[SerializeField] public static float gameSpeed = 3.0f;
+	//singleton
+	public static GameManager instance;
+
+	public float gameSpeed = 3.0f;
 
 	[SerializeField] private GameObject topCameraCollider;
 	[SerializeField] private GameObject bottomCameraCollider;
-
-	public static GameManager instance;
+	[SerializeField] private GameObject obstaclePrefab;
+	[SerializeField] private Transform obstacleParentTransform;
 
 	public event Action onGameStarted;
 	public event Action onGameRestart;
@@ -37,6 +40,7 @@ public class GameManager : MonoBehaviour
 		bottomCameraCollider.GetComponent<BoxCollider2D>().size = new Vector2(width, 1);
 		bottomCameraCollider.transform.position = new Vector2(0, -((height / 2) + 0.5f));
 
+		SpawnObstacle(10);
 	}
 
 	private void Update()
@@ -46,6 +50,16 @@ public class GameManager : MonoBehaviour
 			onGameStarted.Invoke();
 			isGamePlaying = true;
 			Debug.Log("GAME STARTED");
+		}
+	}
+
+	private void SpawnObstacle(int howMany)
+	{
+		for (int i = 1; i < howMany + 1; i++)
+		{
+			float xVar = i * 5;
+			float yVar = UnityEngine.Random.Range(-1, 1);
+			Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
 		}
 	}
 
