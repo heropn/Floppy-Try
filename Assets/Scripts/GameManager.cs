@@ -51,6 +51,10 @@ public class GameManager : MonoBehaviour
 			isGamePlaying = true;
 			Debug.Log("GAME STARTED");
 		}
+		else if (isGamePlaying)
+		{
+			MoveBoard();
+		}
 	}
 
 	private void SpawnObstacle(int howMany)
@@ -61,6 +65,11 @@ public class GameManager : MonoBehaviour
 			float yVar = UnityEngine.Random.Range(-1, 1);
 			Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
 		}
+	}
+
+	private void MoveBoard()
+	{
+		obstacleParentTransform.Translate(Vector2.left * Time.deltaTime * gameSpeed);
 	}
 
 	private void EndGame()

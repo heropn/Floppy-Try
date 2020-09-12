@@ -20,7 +20,7 @@ public class CameraMovement : MonoBehaviour
 	{
 		if (isPlaying)
 		{
-			transform.Translate(Vector2.right * Time.deltaTime * gameSpeed);
+			//transform.Translate(Vector2.right * Time.deltaTime * gameSpeed);
 			player.FollowCamera(transform.localPosition.x);
 		}
 	}
