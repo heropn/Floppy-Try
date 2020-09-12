@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 	//singleton
 	public static GameManager instance;
 
-	public float gameSpeed = 3.0f;
+	public float gameBorderXvar = 0.0f;
 
 	[SerializeField] private GameObject topCameraCollider;
 	[SerializeField] private GameObject bottomCameraCollider;
@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
 
 	public event Action onGameStarted;
 	public event Action onGameRestart;
+
+	private float gameSpeed = 3.0f;
 
 	private bool isGamePlaying;
 
@@ -40,6 +42,8 @@ public class GameManager : MonoBehaviour
 		bottomCameraCollider.GetComponent<BoxCollider2D>().size = new Vector2(width, 1);
 		bottomCameraCollider.transform.position = new Vector2(0, -((height / 2) + 0.5f));
 
+		gameBorderXvar = -(width / 2) - 2;
+
 		SpawnObstacle(10);
 	}
 
@@ -49,7 +53,6 @@ public class GameManager : MonoBehaviour
 		{
 			onGameStarted.Invoke();
 			isGamePlaying = true;
-			Debug.Log("GAME STARTED");
 		}
 		else if (isGamePlaying)
 		{
@@ -74,8 +77,15 @@ public class GameManager : MonoBehaviour
 
 	private void EndGame()
 	{
-		onGameRestart.Invoke();
 		isGamePlaying = false;
+		RestartGame();
+	}
+
+	private void RestartGame()
+	{
+		onGameRestart.Invoke();
+		obstacleParentTransform.localPosition = Vector2.zero;
+		SpawnObstacle(10);
 	}
 
 	private void OnDestroy()

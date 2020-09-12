@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
 	private void RestetGame()
 	{
 		isPlaying = false;
+		transform.localPosition = Vector2.zero;
 	}
 
 	private void Jump()
@@ -57,11 +58,6 @@ public class Player : MonoBehaviour
 		onCollisionDetected.Invoke();
 		rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePosition;
 		Debug.Log("COLLISION");
-	}
-
-	public void ResetPlayerPosition()
-	{
-		transform.localPosition = Vector2.zero;
 	}
 
 	public void FollowCamera(float xValue)
