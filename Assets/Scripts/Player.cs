@@ -31,9 +31,7 @@ public class Player : MonoBehaviour
 	private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Space) && isPlaying)
-		{
-			rigidBody.velocity = Vector2.up * jumpForce;
-		}
+			Jump();
 	}
 
 	private void StartGame()
@@ -41,11 +39,17 @@ public class Player : MonoBehaviour
 		rigidBody.constraints = RigidbodyConstraints2D.None;
 		rigidBody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
 		isPlaying = true;
+		Jump();
 	}
 
 	private void RestetGame()
 	{
 		isPlaying = false;
+	}
+
+	private void Jump()
+	{
+		rigidBody.velocity = Vector2.up * jumpForce;
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision)
