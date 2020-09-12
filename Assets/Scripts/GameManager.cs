@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
 		for (int i = 1; i < howMany + 1; i++)
 		{
 			float xVar = i * 5;
-			float yVar = UnityEngine.Random.Range(-1, 1);
+			float yVar = UnityEngine.Random.Range(-2, 2);
 			Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
 		}
 	}
