@@ -4,19 +4,25 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 	//singleton
-	public static GameManager instance { get; private set; }
+	public static GameManager Instance { get; private set; }
 
-	private float gameBorderXvar = 0.0f;
-	public float GameBorderXvar { get { return gameBorderXvar; } private set { gameBorderXvar = value; } }
-	
-	[SerializeField] private int howManyObstaclesOnScreen = 10;
-	[SerializeField] private float distanceBetweenObstacles = 5.0f;
-	[SerializeField] private float obstacleRandomRangeY = 2.0f;
+	public float gameBorderXvar { get; private set; }
 
-	[SerializeField] private BoxCollider2D topCameraCollider;
-	[SerializeField] private BoxCollider2D bottomCameraCollider;
-	[SerializeField] private GameObject obstaclePrefab;
-	[SerializeField] private Transform obstacleParentTransform;
+	[SerializeField] 
+	private int obstaclesOnScreenCount = 10;
+	[SerializeField] 
+	private float distanceBetweenObstacles = 5.0f;
+	[SerializeField] 
+	private float obstacleRandomRangeY = 2.0f;
+
+	[SerializeField] 
+	private BoxCollider2D topCameraCollider;
+	[SerializeField] 
+	private BoxCollider2D bottomCameraCollider;
+	[SerializeField] 
+	private GameObject obstaclePrefab;
+	[SerializeField] 
+	private Transform obstacleParentTransform;
 
 	public event Action onGameStarted;
 	public event Action onGameRestart;
@@ -27,12 +33,13 @@ public class GameManager : MonoBehaviour
 
 	private void Awake()
 	{
-		instance = this;
+		Instance = this;
 	}
 
 	private void Start()
 	{
-		Player.instance.onCollisionDetected += EndGame;
+		Player.Instance.onCollisionDetected += EndGame;
+		Obstacle.onDestroyed += SpawnObstacles;
 
 		//calculating height and witdh of screen and setting up bottom and top colliders
 		var camera = Camera.main;
@@ -47,7 +54,7 @@ public class GameManager : MonoBehaviour
 
 		gameBorderXvar = -(width / 2.0f) - 2.0f;
 
-		SpawnObstacles(howManyObstaclesOnScreen);
+		SpawnObstacles(obstaclesOnScreenCount);
 	}
 
 	private void Update()
@@ -66,7 +73,7 @@ public class GameManager : MonoBehaviour
 	{
 		if (count == 1)
 		{
-			float xVar = howManyObstaclesOnScreen * distanceBetweenObstacles;
+			float xVar = obstaclesOnScreenCount * distanceBetweenObstacles;
 			float yVar = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
 			Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
 			return;
@@ -95,11 +102,12 @@ public class GameManager : MonoBehaviour
 	{
 		onGameRestart?.Invoke();
 		obstacleParentTransform.localPosition = Vector2.zero;
-		SpawnObstacles(howManyObstaclesOnScreen);
+		SpawnObstacles(obstaclesOnScreenCount);
 	}
 
 	private void OnDestroy()
 	{
-		Player.instance.onCollisionDetected -= EndGame;
+		Player.Instance.onCollisionDetected -= EndGame;
+		Obstacle.onDestroyed -= SpawnObstacles;
 	}
 }

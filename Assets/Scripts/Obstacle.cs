@@ -1,18 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
+	public static event Action<int> onDestroyed;
 	private void Start()
 	{
-		GameManager.instance.onGameRestart += DestroySelf;
+		GameManager.Instance.onGameRestart += DestroySelf;
 	}
 
 	private void Update()
 	{
-		if (transform.position.x < GameManager.instance.GameBorderXvar)
+		if (transform.position.x < GameManager.Instance.gameBorderXvar)
 		{
-			GameManager.instance.SpawnObstacles(1);
-			Destroy(gameObject);
+			onDestroyed?.Invoke(1);
+			DestroySelf();
 		}
 	}
 
@@ -23,6 +25,6 @@ public class Obstacle : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		GameManager.instance.onGameRestart -= DestroySelf;
+		GameManager.Instance.onGameRestart -= DestroySelf;
 	}
 }

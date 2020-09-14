@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-	[SerializeField] private float jumpForce = 20.0f;
+	[SerializeField] 
+	private float jumpForce = 20.0f;
 
-	public static Player instance { get; private set; }
+	public static Player Instance { get; private set; }
 	public event Action onCollisionDetected;
 
 	private Rigidbody2D rigidBody;
@@ -16,14 +17,14 @@ public class Player : MonoBehaviour
 	private void Awake()
 	{
 		rigidBody = GetComponent<Rigidbody2D>();
-		instance = this;
+		Instance = this;
 	}
 
 	private void Start()
 	{
 		rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePosition;
-		GameManager.instance.onGameStarted += StartGame;
-		GameManager.instance.onGameRestart += RestetGame;
+		GameManager.Instance.onGameStarted += StartGame;
+		GameManager.Instance.onGameRestart += RestetGame;
 	}
 
 	private void Update()
@@ -61,7 +62,7 @@ public class Player : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		GameManager.instance.onGameStarted -= StartGame;
-		GameManager.instance.onGameRestart += RestetGame;
+		GameManager.Instance.onGameStarted -= StartGame;
+		GameManager.Instance.onGameRestart += RestetGame;
 	}
 }
