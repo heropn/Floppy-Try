@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour
 
 		GameBorderXvar = -(width / 2.0f) - 2.0f;
 
+		obstaclesOnScreenCount = (int)(width / distanceBetweenObstacles + 2); //2 because we need to keep some additional ones for other ones to spawn off screen
+
 		SpawnObstacles(obstaclesOnScreenCount);
 	}
 
