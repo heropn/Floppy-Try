@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
 	[SerializeField] private float jumpForce = 20.0f;
 
-	public static Player instance;
+	public static Player instance { get; private set; }
 	public event Action onCollisionDetected;
 
 	private Rigidbody2D rigidBody;
@@ -31,12 +29,13 @@ public class Player : MonoBehaviour
 	private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Space) && isPlaying)
+		{
 			Jump();
+		}
 	}
 
 	private void StartGame()
 	{
-		rigidBody.constraints = RigidbodyConstraints2D.None;
 		rigidBody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
 		isPlaying = true;
 		Jump();
@@ -55,14 +54,9 @@ public class Player : MonoBehaviour
 
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		onCollisionDetected.Invoke();
+		onCollisionDetected?.Invoke();
 		rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePosition;
 		Debug.Log("COLLISION");
-	}
-
-	public void FollowCamera(float xValue)
-	{
-		transform.localPosition = new Vector2(xValue, transform.localPosition.y);
 	}
 
 	private void OnDestroy()

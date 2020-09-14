@@ -1,17 +1,20 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
 	//singleton
-	public static GameManager instance;
+	public static GameManager instance { get; private set; }
 
-	public float gameBorderXvar = 0.0f;
+	private float gameBorderXvar = 0.0f;
+	public float GameBorderXvar { get { return gameBorderXvar; } private set { gameBorderXvar = value; } }
+	
+	[SerializeField] private int howManyObstaclesOnScreen = 10;
+	[SerializeField] private float distanceBetweenObstacles = 5.0f;
+	[SerializeField] private float obstacleRandomRangeY = 2.0f;
 
-	[SerializeField] private GameObject topCameraCollider;
-	[SerializeField] private GameObject bottomCameraCollider;
+	[SerializeField] private BoxCollider2D topCameraCollider;
+	[SerializeField] private BoxCollider2D bottomCameraCollider;
 	[SerializeField] private GameObject obstaclePrefab;
 	[SerializeField] private Transform obstacleParentTransform;
 
@@ -32,40 +35,47 @@ public class GameManager : MonoBehaviour
 		Player.instance.onCollisionDetected += EndGame;
 
 		//calculating height and witdh of screen and setting up bottom and top colliders
-		Camera camera = Camera.main;
+		var camera = Camera.main;
 		float height = 2.0f * camera.orthographicSize;
 		float width = height * camera.aspect;
 
-		topCameraCollider.GetComponent<BoxCollider2D>().size = new Vector2(width, 1);
+		topCameraCollider.size = new Vector2(width, 1);
 		topCameraCollider.transform.position = new Vector2(0, (height / 2) + 0.5f);
 
-		bottomCameraCollider.GetComponent<BoxCollider2D>().size = new Vector2(width, 1);
+		bottomCameraCollider.size = new Vector2(width, 1);
 		bottomCameraCollider.transform.position = new Vector2(0, -((height / 2) + 0.5f));
 
-		gameBorderXvar = -(width / 2) - 2;
+		gameBorderXvar = -(width / 2.0f) - 2.0f;
 
-		SpawnObstacle(10);
+		SpawnObstacles(howManyObstaclesOnScreen);
 	}
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Space) && !isGamePlaying)
-		{
-			onGameStarted.Invoke();
-			isGamePlaying = true;
-		}
-		else if (isGamePlaying)
+		if (isGamePlaying)
 		{
 			MoveBoard();
 		}
-	}
-
-	private void SpawnObstacle(int howMany)
-	{
-		for (int i = 1; i < howMany + 1; i++)
+		else if (Input.GetKeyDown(KeyCode.Space) && !isGamePlaying)
 		{
-			float xVar = i * 5;
-			float yVar = UnityEngine.Random.Range(-2, 2);
+			onGameStarted?.Invoke();
+			isGamePlaying = true;
+		}
+	}
+	public void SpawnObstacles(int count)
+	{
+		if (count == 1)
+		{
+			float xVar = howManyObstaclesOnScreen * distanceBetweenObstacles;
+			float yVar = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
+			Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
+			return;
+		}
+
+		for (int i = 1; i < count + 1; i++)
+		{
+			float xVar = i * distanceBetweenObstacles;
+			float yVar = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
 			Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
 		}
 	}
@@ -83,9 +93,9 @@ public class GameManager : MonoBehaviour
 
 	private void RestartGame()
 	{
-		onGameRestart.Invoke();
+		onGameRestart?.Invoke();
 		obstacleParentTransform.localPosition = Vector2.zero;
-		SpawnObstacle(10);
+		SpawnObstacles(howManyObstaclesOnScreen);
 	}
 
 	private void OnDestroy()

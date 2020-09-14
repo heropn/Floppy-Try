@@ -623,8 +623,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 320560015c865f745ab70e9ae822ac72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameBorderXvar: 0
-  topCameraCollider: {fileID: 108591118}
-  bottomCameraCollider: {fileID: 1235175885}
+  howManyObstaclesAtStart: 10
+  distanceBetweenObstacles: 5
+  topCameraCollider: {fileID: 108591120}
+  bottomCameraCollider: {fileID: 1235175887}
   obstaclePrefab: {fileID: 597428695305022507, guid: 4273f09db0eb6b44abfaa8291fc6b841, type: 3}
   obstacleParentTransform: {fileID: 570983352}

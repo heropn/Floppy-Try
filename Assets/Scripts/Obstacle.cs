@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
@@ -11,8 +9,9 @@ public class Obstacle : MonoBehaviour
 
 	private void Update()
 	{
-		if (transform.position.x < GameManager.instance.gameBorderXvar)
+		if (transform.position.x < GameManager.instance.GameBorderXvar)
 		{
+			GameManager.instance.SpawnObstacles(1);
 			Destroy(gameObject);
 		}
 	}
