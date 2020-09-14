@@ -4,6 +4,7 @@ using UnityEngine;
 public class Obstacle : MonoBehaviour
 {
 	public static event Action<int> onDestroyed;
+
 	private void Start()
 	{
 		GameManager.Instance.onGameRestart += DestroySelf;

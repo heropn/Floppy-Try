@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 
 	public static Player Instance { get; private set; }
 	public event Action onCollisionDetected;
+	public event Action onTriggerDetected;
 
 	private Rigidbody2D rigidBody;
 
@@ -58,6 +59,12 @@ public class Player : MonoBehaviour
 		onCollisionDetected?.Invoke();
 		rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePosition;
 		Debug.Log("COLLISION");
+	}
+
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		onTriggerDetected?.Invoke();
+		Debug.Log("TRIGGERED");
 	}
 
 	private void OnDestroy()
