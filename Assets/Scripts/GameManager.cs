@@ -5,8 +5,10 @@ public class GameManager : MonoBehaviour
 {
 	//singleton
 	public static GameManager Instance { get; private set; }
-
 	public float GameBorderXvar { get; private set; }
+
+	public event Action onGameStarted;
+	public event Action onGameRestart;
 
 	[SerializeField] 
 	private int obstaclesOnScreenCount = 10;
@@ -24,8 +26,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField] 
 	private Transform obstacleParentTransform;
 
-	public event Action onGameStarted;
-	public event Action onGameRestart;
+	private GameObject lastObstacle;
 
 	private float gameSpeed = 3.0f;
 
@@ -71,11 +72,11 @@ public class GameManager : MonoBehaviour
 	}
 	public void SpawnObstacles(int count)
 	{
-		if (count == 1)
+		if (count == 1 && lastObstacle)
 		{
-			float xVar = obstaclesOnScreenCount * distanceBetweenObstacles;
+			float xVar = lastObstacle.transform.position.x + distanceBetweenObstacles;
 			float yVar = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
-			Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
+			lastObstacle = Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
 			return;
 		}
 
@@ -83,7 +84,7 @@ public class GameManager : MonoBehaviour
 		{
 			float xVar = i * distanceBetweenObstacles;
 			float yVar = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
-			Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
+			lastObstacle = Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
 		}
 	}
 
@@ -94,6 +95,7 @@ public class GameManager : MonoBehaviour
 
 	private void EndGame()
 	{
+		lastObstacle = null;
 		isGamePlaying = false;
 		RestartGame();
 	}
