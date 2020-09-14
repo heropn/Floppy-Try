@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 	//singleton
 	public static GameManager Instance { get; private set; }
 
-	public float gameBorderXvar { get; private set; }
+	public float GameBorderXvar { get; private set; }
 
 	[SerializeField] 
 	private int obstaclesOnScreenCount = 10;
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
 		bottomCameraCollider.size = new Vector2(width, 1);
 		bottomCameraCollider.transform.position = new Vector2(0, -((height / 2) + 0.5f));
 
-		gameBorderXvar = -(width / 2.0f) - 2.0f;
+		GameBorderXvar = -(width / 2.0f) - 2.0f;
 
 		SpawnObstacles(obstaclesOnScreenCount);
 	}
