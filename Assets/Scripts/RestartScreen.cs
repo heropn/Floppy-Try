@@ -23,7 +23,7 @@ public class RestartScreen : MonoBehaviour
 
 	private void Start()
 	{
-		GameManager.Instance.onGameEnded += SetActiveRestartUI;
+		GameManager.Instance.GameEnded += SetActiveRestartUI;
 
 		restartButton.onClick.AddListener(RestartButtonClicked);
 		restartButton.gameObject.SetActive(false);
@@ -47,6 +47,6 @@ public class RestartScreen : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		GameManager.Instance.onGameEnded -= SetActiveRestartUI;
+		GameManager.Instance.GameEnded -= SetActiveRestartUI;
 	}
 }

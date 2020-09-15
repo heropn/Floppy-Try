@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
 	public event Action onGameStarted;
 	public event Action onGameRestart;
-	public event Action onGameEnded;
+	public event Action GameEnded;
 
 	[SerializeField] 
 	private int obstaclesOnScreenCount = 10;
@@ -28,21 +28,20 @@ public class GameManager : MonoBehaviour
 	[SerializeField] 
 	private Transform obstacleParentTransform;
 
-	private GameObject lastObstacle;
-	private List<GameObject> obstacles = new List<GameObject>();
+	private List<Obstacle> obstacles = new List<Obstacle>();
 
 	private float gameSpeed = 3.0f;
 
 	private bool isGamePlaying;
 
-	private enum StateOfGame
+	private enum GameState
 	{
 		Waiting,
 		Playing,
 		Stopped
 	}
 
-	private StateOfGame currentStateOfGame;
+	private GameState currentStateOfGame;
 
 	private void Awake()
 	{
@@ -72,19 +71,19 @@ public class GameManager : MonoBehaviour
 
 		SpawnObstacles(obstaclesOnScreenCount);
 
-		currentStateOfGame = StateOfGame.Waiting;
+		currentStateOfGame = GameState.Waiting;
 	}
 
 	private void Update()
 	{
-		if (currentStateOfGame == StateOfGame.Playing)
+		if (currentStateOfGame == GameState.Playing)
 		{
 			MoveBoard();
 		}
-		else if (Input.GetKeyDown(KeyCode.Space) && currentStateOfGame == StateOfGame.Waiting)
+		else if (Input.GetKeyDown(KeyCode.Space) && currentStateOfGame == GameState.Waiting)
 		{
 			onGameStarted?.Invoke();
-			currentStateOfGame = StateOfGame.Playing;
+			currentStateOfGame = GameState.Playing;
 		}
 	}
 	public void SpawnObstacles(int count)
@@ -93,7 +92,8 @@ public class GameManager : MonoBehaviour
 		{
 			float x = obstacles[obstacles.Count - 1].transform.position.x + distanceBetweenObstacles;
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
-			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform));
+			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
+			obstacles.RemoveAt(0);
 			return;
 		}
 
@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
 		{
 			float x = i * distanceBetweenObstacles;
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
-			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform));
+			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
 		}
 	}
 
@@ -113,18 +113,17 @@ public class GameManager : MonoBehaviour
 	private void EndGame()
 	{
 		isGamePlaying = false;
-		currentStateOfGame = StateOfGame.Stopped;
-		onGameEnded?.Invoke();
-		//RestartGame();
+		currentStateOfGame = GameState.Stopped;
+		GameEnded?.Invoke();
 	}
 
 	private void RestartGame()
 	{
-		lastObstacle = null;
 		onGameRestart?.Invoke();
 		obstacleParentTransform.localPosition = Vector2.zero;
+		obstacles.Clear();
 		SpawnObstacles(obstaclesOnScreenCount);
-		currentStateOfGame = StateOfGame.Waiting;
+		currentStateOfGame = GameState.Waiting;
 	}
 
 	private void OnDestroy()
