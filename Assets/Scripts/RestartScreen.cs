@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +11,10 @@ public class RestartScreen : MonoBehaviour
 
 	[SerializeField]
 	private Button restartButton;
+	[SerializeField]
+	private TextMeshProUGUI highscoreText;
+
+	//private const string highscoreBase = "Highscore: ";
 
 	private void Awake()
 	{
@@ -20,24 +23,30 @@ public class RestartScreen : MonoBehaviour
 
 	private void Start()
 	{
-		GameManager.Instance.onGameEnded += SetActiveButton;
+		GameManager.Instance.onGameEnded += SetActiveRestartUI;
+
 		restartButton.onClick.AddListener(RestartButtonClicked);
 		restartButton.gameObject.SetActive(false);
+		highscoreText.gameObject.SetActive(false);
+
+		//highscoreText.text = highscoreBase + PlayerPrefs.GetInt("TestHighScore").ToString();
 	}
 
-	private void SetActiveButton()
+	private void SetActiveRestartUI()
 	{
 		restartButton.gameObject.SetActive(true);
+		highscoreText.gameObject.SetActive(true);
 	}
 	
 	private void RestartButtonClicked()
 	{
 		onRestartButtonClicked?.Invoke();
 		restartButton.gameObject.SetActive(false);
+		highscoreText.gameObject.SetActive(false);
 	}
 
 	private void OnDestroy()
 	{
-		GameManager.Instance.onGameEnded -= SetActiveButton;
+		GameManager.Instance.onGameEnded -= SetActiveRestartUI;
 	}
 }

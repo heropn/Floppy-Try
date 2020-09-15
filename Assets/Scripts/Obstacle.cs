@@ -12,7 +12,7 @@ public class Obstacle : MonoBehaviour
 
 	private void Update()
 	{
-		if (transform.position.x < GameManager.Instance.GameBorderXvar)
+		if (transform.position.x < GameManager.Instance.GameBorderX)
 		{
 			onDestroyed?.Invoke(1);
 			DestroySelf();

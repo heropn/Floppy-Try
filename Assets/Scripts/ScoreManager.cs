@@ -15,13 +15,13 @@ public class ScoreManager : MonoBehaviour
 
 	private void Start()
 	{
-		Player.Instance.onTriggerDetected += ScoreAPoint;
+		Player.Instance.onTriggerDetected += ScorePoint;
 		GameManager.Instance.onGameRestart += RestartPoints;
 		scorePoints = 0;
 		textUI.text = scorePoints.ToString();
 	}
 
-	private void ScoreAPoint()
+	private void ScorePoint()
 	{
 		textUI.text = (++scorePoints).ToString();
 	}
@@ -34,7 +34,7 @@ public class ScoreManager : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		Player.Instance.onTriggerDetected -= ScoreAPoint;
+		Player.Instance.onTriggerDetected -= ScorePoint;
 		GameManager.Instance.onGameRestart -= RestartPoints;
 	}
 }

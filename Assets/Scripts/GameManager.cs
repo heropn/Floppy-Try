@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
 	//singleton
 	public static GameManager Instance { get; private set; }
-	public float GameBorderXvar { get; private set; }
+	public float GameBorderX { get; private set; }
 
 	public event Action onGameStarted;
 	public event Action onGameRestart;
@@ -28,6 +29,7 @@ public class GameManager : MonoBehaviour
 	private Transform obstacleParentTransform;
 
 	private GameObject lastObstacle;
+	private List<GameObject> obstacles = new List<GameObject>();
 
 	private float gameSpeed = 3.0f;
 
@@ -64,7 +66,7 @@ public class GameManager : MonoBehaviour
 		bottomCameraCollider.size = new Vector2(width, 1);
 		bottomCameraCollider.transform.position = new Vector2(0, -((height / 2) + 0.5f));
 
-		GameBorderXvar = -(width / 2.0f) - 2.0f;
+		GameBorderX = -(width / 2.0f) - 2.0f;
 
 		obstaclesOnScreenCount = (int)(width / distanceBetweenObstacles + 2); //2 because we need to keep some additional ones for other ones to spawn off screen
 
@@ -87,19 +89,19 @@ public class GameManager : MonoBehaviour
 	}
 	public void SpawnObstacles(int count)
 	{
-		if (count == 1 && lastObstacle)
+		if (count == 1 && obstacles.Count > 0)
 		{
-			float xVar = lastObstacle.transform.position.x + distanceBetweenObstacles;
-			float yVar = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
-			lastObstacle = Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
+			float x = obstacles[obstacles.Count - 1].transform.position.x + distanceBetweenObstacles;
+			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
+			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform));
 			return;
 		}
 
 		for (int i = 1; i < count + 1; i++)
 		{
-			float xVar = i * distanceBetweenObstacles;
-			float yVar = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
-			lastObstacle = Instantiate(obstaclePrefab, new Vector2(xVar, yVar), Quaternion.identity, obstacleParentTransform);
+			float x = i * distanceBetweenObstacles;
+			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
+			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform));
 		}
 	}
 
