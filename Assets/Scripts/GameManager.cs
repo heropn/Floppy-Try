@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 
 	public event Action onGameStarted;
 	public event Action onGameRestart;
+	public event Action onGameEnded;
 
 	[SerializeField] 
 	private int obstaclesOnScreenCount = 10;
@@ -32,6 +33,15 @@ public class GameManager : MonoBehaviour
 
 	private bool isGamePlaying;
 
+	private enum StateOfGame
+	{
+		Waiting,
+		Playing,
+		Stopped
+	}
+
+	private StateOfGame currentStateOfGame;
+
 	private void Awake()
 	{
 		Instance = this;
@@ -41,6 +51,7 @@ public class GameManager : MonoBehaviour
 	{
 		Player.Instance.onCollisionDetected += EndGame;
 		Obstacle.onDestroyed += SpawnObstacles;
+		RestartScreen.Instance.onRestartButtonClicked += RestartGame;
 
 		//calculating height and witdh of screen and setting up bottom and top colliders
 		var camera = Camera.main;
@@ -58,18 +69,20 @@ public class GameManager : MonoBehaviour
 		obstaclesOnScreenCount = (int)(width / distanceBetweenObstacles + 2); //2 because we need to keep some additional ones for other ones to spawn off screen
 
 		SpawnObstacles(obstaclesOnScreenCount);
+
+		currentStateOfGame = StateOfGame.Waiting;
 	}
 
 	private void Update()
 	{
-		if (isGamePlaying)
+		if (currentStateOfGame == StateOfGame.Playing)
 		{
 			MoveBoard();
 		}
-		else if (Input.GetKeyDown(KeyCode.Space) && !isGamePlaying)
+		else if (Input.GetKeyDown(KeyCode.Space) && currentStateOfGame == StateOfGame.Waiting)
 		{
 			onGameStarted?.Invoke();
-			isGamePlaying = true;
+			currentStateOfGame = StateOfGame.Playing;
 		}
 	}
 	public void SpawnObstacles(int count)
@@ -97,21 +110,25 @@ public class GameManager : MonoBehaviour
 
 	private void EndGame()
 	{
-		lastObstacle = null;
 		isGamePlaying = false;
-		RestartGame();
+		currentStateOfGame = StateOfGame.Stopped;
+		onGameEnded?.Invoke();
+		//RestartGame();
 	}
 
 	private void RestartGame()
 	{
+		lastObstacle = null;
 		onGameRestart?.Invoke();
 		obstacleParentTransform.localPosition = Vector2.zero;
 		SpawnObstacles(obstaclesOnScreenCount);
+		currentStateOfGame = StateOfGame.Waiting;
 	}
 
 	private void OnDestroy()
 	{
 		Player.Instance.onCollisionDetected -= EndGame;
 		Obstacle.onDestroyed -= SpawnObstacles;
+		RestartScreen.Instance.onRestartButtonClicked -= RestartGame;
 	}
 }
