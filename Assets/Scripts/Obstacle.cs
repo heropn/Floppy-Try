@@ -3,13 +3,9 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
-	public static event Action<int> onDestroyed;
-	private float gameBorderX;
+	public event Action<int> onDestroyed;
 
-	private void Start()
-	{
-		GameManager.Instance.onGameRestart += DestroySelf;
-	}
+	private float gameBorderX;
 
 	private void Update()
 	{
@@ -28,10 +24,5 @@ public class Obstacle : MonoBehaviour
 	public void SetUpDestroyLocation(float gameBorderX)
 	{
 		this.gameBorderX = gameBorderX;
-	}
-
-	private void OnDestroy()
-	{
-		GameManager.Instance.onGameRestart -= DestroySelf;
 	}
 }

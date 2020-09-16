@@ -51,7 +51,6 @@ public class GameManager : MonoBehaviour
 	private void Start()
 	{
 		Player.Instance.onCollisionDetected += EndGame;
-		Obstacle.onDestroyed += SpawnObstacles;
 		RestartScreen.Instance.onRestartButtonClicked += RestartGame;
 
 		//calculating height and witdh of screen and setting up bottom and top colliders
@@ -92,8 +91,10 @@ public class GameManager : MonoBehaviour
 		{
 			float x = obstacles[obstacles.Count - 1].transform.position.x + distanceBetweenObstacles;
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
+
 			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
 			obstacles[obstacles.Count - 1].SetUpDestroyLocation(gameBorderX);
+			obstacles[obstacles.Count - 1].onDestroyed += SpawnObstacles;
 			obstacles.RemoveAt(0); // Need to fix it, its a hack
 			return;
 		}
@@ -102,8 +103,10 @@ public class GameManager : MonoBehaviour
 		{
 			float x = i * distanceBetweenObstacles;
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
+
 			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
 			obstacles[i - 1].SetUpDestroyLocation(gameBorderX);
+			obstacles[i - 1].onDestroyed += SpawnObstacles;
 		}
 	}
 
@@ -140,7 +143,11 @@ public class GameManager : MonoBehaviour
 	private void OnDestroy()
 	{
 		Player.Instance.onCollisionDetected -= EndGame;
-		Obstacle.onDestroyed -= SpawnObstacles;
 		RestartScreen.Instance.onRestartButtonClicked -= RestartGame;
+
+		foreach (var obstacle in obstacles)
+		{
+			obstacle.onDestroyed -= SpawnObstacles;
+		}
 	}
 }
