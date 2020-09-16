@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField] 
 	private Transform obstacleParentTransform;
 
-	private List<Obstacle> obstacles = new List<Obstacle>(); //Change to private when fixed
+	private List<Obstacle> obstacles = new List<Obstacle>();
 
 	private float gameSpeed = 3.0f;
 	private float gameBorderX;
@@ -92,9 +92,11 @@ public class GameManager : MonoBehaviour
 			float x = obstacles[obstacles.Count - 1].transform.position.x + distanceBetweenObstacles;
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
 
-			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
-			obstacles[obstacles.Count - 1].Initialize(gameBorderX);
-			obstacles[obstacles.Count - 1].onPassedBorder += DestroyObstacle;
+			var obstacle = Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>();
+			obstacle.Initialize(gameBorderX);
+			obstacle.onPassedBorder += DestroyObstacle;
+			obstacles.Add(obstacle);
+
 			return;
 		}
 
@@ -103,9 +105,10 @@ public class GameManager : MonoBehaviour
 			float x = i * distanceBetweenObstacles;
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
 
-			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
-			obstacles[i - 1].Initialize(gameBorderX);
-			obstacles[i - 1].onPassedBorder += DestroyObstacle;
+			var obstacle = Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>();
+			obstacle.Initialize(gameBorderX);
+			obstacle.onPassedBorder += DestroyObstacle;
+			obstacles.Add(obstacle);
 		}
 	}
 
