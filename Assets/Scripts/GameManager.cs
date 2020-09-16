@@ -6,7 +6,6 @@ public class GameManager : MonoBehaviour
 {
 	//singleton
 	public static GameManager Instance { get; private set; }
-	public float GameBorderX { get; private set; }
 
 	public event Action onGameStarted;
 	public event Action onGameRestart;
@@ -28,9 +27,10 @@ public class GameManager : MonoBehaviour
 	[SerializeField] 
 	private Transform obstacleParentTransform;
 
-	private List<Obstacle> obstacles = new List<Obstacle>();
+	public List<Obstacle> obstacles = new List<Obstacle>(); //Change to private when fixed
 
 	private float gameSpeed = 3.0f;
+	private float gameBorderX;
 
 	private bool isGamePlaying;
 
@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
 		bottomCameraCollider.size = new Vector2(width, 1);
 		bottomCameraCollider.transform.position = new Vector2(0, -((height / 2) + 0.5f));
 
-		GameBorderX = -(width / 2.0f) - 2.0f;
+		gameBorderX = -(width / 2.0f) - 2.0f;
 
 		obstaclesOnScreenCount = (int)(width / distanceBetweenObstacles + 2); //2 because we need to keep some additional ones for other ones to spawn off screen
 
@@ -86,14 +86,15 @@ public class GameManager : MonoBehaviour
 			currentStateOfGame = GameState.Playing;
 		}
 	}
-	public void SpawnObstacles(int count)
+	private void SpawnObstacles(int count)
 	{
 		if (count == 1 && obstacles.Count > 0)
 		{
 			float x = obstacles[obstacles.Count - 1].transform.position.x + distanceBetweenObstacles;
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
 			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
-			obstacles.RemoveAt(0);
+			obstacles[obstacles.Count - 1].SetUpDestroyLocation(gameBorderX);
+			obstacles.RemoveAt(0); // Need to fix it, its a hack
 			return;
 		}
 
@@ -102,7 +103,17 @@ public class GameManager : MonoBehaviour
 			float x = i * distanceBetweenObstacles;
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
 			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
+			obstacles[i - 1].SetUpDestroyLocation(gameBorderX);
 		}
+	}
+
+	private void DestroyAllObstacles()
+	{
+		foreach (var obstacle in obstacles)
+		{
+			obstacle.DestroySelf();
+		}
+		obstacles.Clear();
 	}
 
 	private void MoveBoard()
@@ -121,7 +132,7 @@ public class GameManager : MonoBehaviour
 	{
 		onGameRestart?.Invoke();
 		obstacleParentTransform.localPosition = Vector2.zero;
-		obstacles.Clear();
+		DestroyAllObstacles();
 		SpawnObstacles(obstaclesOnScreenCount);
 		currentStateOfGame = GameState.Waiting;
 	}
