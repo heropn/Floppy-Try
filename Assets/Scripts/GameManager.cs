@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField] 
 	private Transform obstacleParentTransform;
 
-	public List<Obstacle> obstacles = new List<Obstacle>(); //Change to private when fixed
+	private List<Obstacle> obstacles = new List<Obstacle>(); //Change to private when fixed
 
 	private float gameSpeed = 3.0f;
 	private float gameBorderX;
@@ -93,9 +93,8 @@ public class GameManager : MonoBehaviour
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
 
 			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
-			obstacles[obstacles.Count - 1].SetUpDestroyLocation(gameBorderX);
-			obstacles[obstacles.Count - 1].onDestroyed += SpawnObstacles;
-			obstacles.RemoveAt(0); // Need to fix it, its a hack
+			obstacles[obstacles.Count - 1].Initialize(gameBorderX);
+			obstacles[obstacles.Count - 1].onPassedBorder += DestroyObstacle;
 			return;
 		}
 
@@ -105,16 +104,26 @@ public class GameManager : MonoBehaviour
 			float y = UnityEngine.Random.Range(-obstacleRandomRangeY, obstacleRandomRangeY);
 
 			obstacles.Add(Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>());
-			obstacles[i - 1].SetUpDestroyLocation(gameBorderX);
-			obstacles[i - 1].onDestroyed += SpawnObstacles;
+			obstacles[i - 1].Initialize(gameBorderX);
+			obstacles[i - 1].onPassedBorder += DestroyObstacle;
 		}
+	}
+
+	private void DestroyObstacle(Obstacle obstacle)
+	{
+		obstacles.Remove(obstacle);
+		obstacle.onPassedBorder -= DestroyObstacle;
+		obstacle.Destroy();
+
+		SpawnObstacles(1);
 	}
 
 	private void DestroyAllObstacles()
 	{
 		foreach (var obstacle in obstacles)
 		{
-			obstacle.DestroySelf();
+			obstacle.onPassedBorder -= DestroyObstacle;
+			obstacle.Destroy();
 		}
 		obstacles.Clear();
 	}
@@ -147,7 +156,7 @@ public class GameManager : MonoBehaviour
 
 		foreach (var obstacle in obstacles)
 		{
-			obstacle.onDestroyed -= SpawnObstacles;
+			obstacle.onPassedBorder -= DestroyObstacle;
 		}
 	}
 }

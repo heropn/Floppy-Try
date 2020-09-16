@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
-	public event Action<int> onDestroyed;
+	public event Action<Obstacle> onPassedBorder;
 
 	private float gameBorderX;
 
@@ -11,17 +11,16 @@ public class Obstacle : MonoBehaviour
 	{
 		if (transform.position.x < gameBorderX)
 		{
-			onDestroyed?.Invoke(1);
-			DestroySelf();
+			onPassedBorder?.Invoke(this);
 		}
 	}
 
-	public void DestroySelf()
+	public void Destroy()
 	{
 		Destroy(gameObject);
 	}
 
-	public void SetUpDestroyLocation(float gameBorderX)
+	public void Initialize(float gameBorderX)
 	{
 		this.gameBorderX = gameBorderX;
 	}
