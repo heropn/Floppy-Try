@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviour
 
 			var obstacle = Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>();
 			obstacle.Initialize(gameBorderX);
-			obstacle.onPassedBorder += DestroyObstacle;
+			obstacle.onPassedBorder += DestroyAndSpawnObstacle;
 			obstacles.Add(obstacle);
 
 			return;
@@ -107,15 +107,15 @@ public class GameManager : MonoBehaviour
 
 			var obstacle = Instantiate(obstaclePrefab, new Vector2(x, y), Quaternion.identity, obstacleParentTransform).GetComponent<Obstacle>();
 			obstacle.Initialize(gameBorderX);
-			obstacle.onPassedBorder += DestroyObstacle;
+			obstacle.onPassedBorder += DestroyAndSpawnObstacle;
 			obstacles.Add(obstacle);
 		}
 	}
 
-	private void DestroyObstacle(Obstacle obstacle)
+	private void DestroyAndSpawnObstacle(Obstacle obstacle)
 	{
 		obstacles.Remove(obstacle);
-		obstacle.onPassedBorder -= DestroyObstacle;
+		obstacle.onPassedBorder -= DestroyAndSpawnObstacle;
 		obstacle.Destroy();
 
 		SpawnObstacles(1);
@@ -125,7 +125,7 @@ public class GameManager : MonoBehaviour
 	{
 		foreach (var obstacle in obstacles)
 		{
-			obstacle.onPassedBorder -= DestroyObstacle;
+			obstacle.onPassedBorder -= DestroyAndSpawnObstacle;
 			obstacle.Destroy();
 		}
 		obstacles.Clear();
@@ -157,9 +157,6 @@ public class GameManager : MonoBehaviour
 		Player.Instance.onCollisionDetected -= EndGame;
 		RestartScreen.Instance.onRestartButtonClicked -= RestartGame;
 
-		foreach (var obstacle in obstacles)
-		{
-			obstacle.onPassedBorder -= DestroyObstacle;
-		}
+		DestroyAllObstacles();
 	}
 }

@@ -20,8 +20,9 @@ public class Obstacle : MonoBehaviour
 		Destroy(gameObject);
 	}
 
-	public void Initialize(float gameBorderX)
+	public Action<Obstacle> Initialize(float gameBorderX)
 	{
 		this.gameBorderX = gameBorderX;
+		return onPassedBorder;
 	}
 }

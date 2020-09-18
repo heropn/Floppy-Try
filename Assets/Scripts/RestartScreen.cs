@@ -14,7 +14,9 @@ public class RestartScreen : MonoBehaviour
 	[SerializeField]
 	private TextMeshProUGUI highscoreText;
 
-	//private const string highscoreBase = "Highscore: ";
+	private int highScore;
+
+	private const string highscoreBase = "Highscore: ";
 
 	private void Awake()
 	{
@@ -23,17 +25,15 @@ public class RestartScreen : MonoBehaviour
 
 	private void Start()
 	{
-		GameManager.Instance.GameEnded += SetActiveRestartUI;
-
 		restartButton.onClick.AddListener(RestartButtonClicked);
 		restartButton.gameObject.SetActive(false);
 		highscoreText.gameObject.SetActive(false);
-
-		//highscoreText.text = highscoreBase + PlayerPrefs.GetInt("TestHighScore").ToString();
 	}
 
-	private void SetActiveRestartUI()
+	public void SetActiveRestartUI()
 	{
+		highScore = PlayerPrefs.GetInt("Highscore", 0);
+		highscoreText.text = highscoreBase + highScore.ToString();
 		restartButton.gameObject.SetActive(true);
 		highscoreText.gameObject.SetActive(true);
 	}
@@ -43,10 +43,5 @@ public class RestartScreen : MonoBehaviour
 		onRestartButtonClicked?.Invoke();
 		restartButton.gameObject.SetActive(false);
 		highscoreText.gameObject.SetActive(false);
-	}
-
-	private void OnDestroy()
-	{
-		GameManager.Instance.GameEnded -= SetActiveRestartUI;
 	}
 }

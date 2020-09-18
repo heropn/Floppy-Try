@@ -15,26 +15,25 @@ public class ScoreManager : MonoBehaviour
 
 	private void Start()
 	{
-		Player.Instance.onTriggerDetected += ScorePoint;
-		GameManager.Instance.onGameRestart += RestartPoints;
 		scorePoints = 0;
 		textUI.text = scorePoints.ToString();
 	}
 
-	private void ScorePoint()
+	public void ScorePoint()
 	{
 		textUI.text = (++scorePoints).ToString();
 	}
 
-	private void RestartPoints()
+	public void SetHighScoreIfHigher()
+	{
+		if (PlayerPrefs.GetInt("Highscore", 0) < scorePoints)
+		{
+			PlayerPrefs.SetInt("Highscore", scorePoints);
+		}
+	}
+	public void RestartPoints()
 	{
 		scorePoints = 0;
 		textUI.text = scorePoints.ToString();
-	}
-
-	private void OnDestroy()
-	{
-		Player.Instance.onTriggerDetected -= ScorePoint;
-		GameManager.Instance.onGameRestart -= RestartPoints;
 	}
 }
