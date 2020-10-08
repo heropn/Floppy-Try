@@ -1,46 +1,50 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-	public int pointsScored { get; private set; }
+	public event Action<int> onUpdatedScorePoints;
 
-	private const string hihgscoreString = "Highscore";
+	public int PointsScored { get; private set; }
 
-	public int highscore { get; private set; }
+	private const string highscoreString = "Highscore";
+
+	public int Highscore { get; private set; }
 
 	private void Start()
 	{
-		GameManager.Instance.PlayerObject.onTriggerDetected += ScorePoint;
+		GameManager.Instance.Player.onTriggerDetected += ScorePoint;
 		GameManager.Instance.onGameRestart += RestartPoints;
 		GameManager.Instance.GameEnded += SetHighScoreIfHigher;
 
-		highscore = PlayerPrefs.GetInt(hihgscoreString, 0);
+		Highscore = PlayerPrefs.GetInt(highscoreString, 0);
 	}
 
-	public void ScorePoint()
+	private void ScorePoint()
 	{
-		++pointsScored;
+		onUpdatedScorePoints.Invoke(++PointsScored);
 	}
 
-	public void SetHighScoreIfHigher()
+	private void SetHighScoreIfHigher()
 	{
-		if (highscore < pointsScored)
+		if (Highscore < PointsScored)
 		{
-			PlayerPrefs.SetInt(hihgscoreString, pointsScored);
-			highscore = pointsScored;
+			PlayerPrefs.SetInt(highscoreString, PointsScored);
+			Highscore = PointsScored;
 		}
 	}
-	public void RestartPoints()
+	private void RestartPoints()
 	{
-		pointsScored = 0;
+		PointsScored = 0;
+		onUpdatedScorePoints.Invoke(PointsScored);
 	}
 
 	private void OnDestroy()
 	{
-		GameManager.Instance.PlayerObject.onTriggerDetected -= ScorePoint;
+		GameManager.Instance.Player.onTriggerDetected -= ScorePoint;
 		GameManager.Instance.onGameRestart -= RestartPoints;
 		GameManager.Instance.GameEnded -= SetHighScoreIfHigher;
 	}

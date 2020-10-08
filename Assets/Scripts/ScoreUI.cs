@@ -6,7 +6,6 @@ using UnityEngine;
 public class ScoreUI : MonoBehaviour
 {
 	private TextMeshProUGUI textUI;
-	private int scorePoints;
 
 	private void Awake()
 	{
@@ -15,18 +14,11 @@ public class ScoreUI : MonoBehaviour
 
 	private void Start()
 	{
-		scorePoints = 0;
-		textUI.text = scorePoints.ToString();
+		textUI.text = "0";
 	}
 
-	public void ScorePoint()
+	public void UpdateScore(int score)
 	{
-		textUI.text = (++scorePoints).ToString();
-	}
-
-	public void RestartPoints()
-	{
-		scorePoints = 0;
-		textUI.text = scorePoints.ToString();
+		textUI.text = (score).ToString();
 	}
 }

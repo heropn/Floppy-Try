@@ -1,29 +1,41 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UiManager : MonoBehaviour
 {
+	public static UiManager Instance { get; private set; }
+
+	public event Action onRestartButtonClicked;
+
 	[SerializeField]
 	private ScoreUI scoreUI;
 	[SerializeField]
 	private RestartScreen restartScreen;
 
+	private void Awake()
+	{
+		Instance = this;
+	}
+
 	private void Start()
 	{
-		GameManager.Instance.PlayerObject.onTriggerDetected += PlayerCollide;
-		GameManager.Instance.onGameRestart += RestartPoints;
+		GameManager.Instance.ScoreManager.onUpdatedScorePoints += UpdateScorePoints;
 		GameManager.Instance.GameEnded += GameEnd;
+
+		restartScreen.RestartButton.onClick.AddListener(RestartButtonClicked);
 	}
 
-	private void PlayerCollide()
+	private void UpdateScorePoints(int score)
 	{
-		scoreUI.ScorePoint();
+		scoreUI.UpdateScore(score);
 	}
 
-	private void RestartPoints()
+	private void RestartButtonClicked()
 	{
-		scoreUI.RestartPoints();
+		onRestartButtonClicked?.Invoke();
+		restartScreen.SetActiveRestartScreen(false);
 	}
 
 	private void GameEnd()
@@ -33,8 +45,7 @@ public class UiManager : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		GameManager.Instance.PlayerObject.onTriggerDetected -= PlayerCollide;
-		GameManager.Instance.onGameRestart -= RestartPoints;
 		GameManager.Instance.GameEnded -= GameEnd;
+		GameManager.Instance.ScoreManager.onUpdatedScorePoints -= UpdateScorePoints;
 	}
 }
