@@ -5,35 +5,43 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-	private TextMeshProUGUI textUI;
-	private int scorePoints;
+	public int pointsScored { get; private set; }
 
-	private void Awake()
-	{
-		textUI = GetComponent<TextMeshProUGUI>();
-	}
+	private const string hihgscoreString = "Highscore";
+
+	public int highscore { get; private set; }
 
 	private void Start()
 	{
-		scorePoints = 0;
-		textUI.text = scorePoints.ToString();
+		GameManager.Instance.PlayerObject.onTriggerDetected += ScorePoint;
+		GameManager.Instance.onGameRestart += RestartPoints;
+		GameManager.Instance.GameEnded += SetHighScoreIfHigher;
+
+		highscore = PlayerPrefs.GetInt(hihgscoreString, 0);
 	}
 
 	public void ScorePoint()
 	{
-		textUI.text = (++scorePoints).ToString();
+		++pointsScored;
 	}
 
 	public void SetHighScoreIfHigher()
 	{
-		if (PlayerPrefs.GetInt("Highscore", 0) < scorePoints)
+		if (highscore < pointsScored)
 		{
-			PlayerPrefs.SetInt("Highscore", scorePoints);
+			PlayerPrefs.SetInt(hihgscoreString, pointsScored);
+			highscore = pointsScored;
 		}
 	}
 	public void RestartPoints()
 	{
-		scorePoints = 0;
-		textUI.text = scorePoints.ToString();
+		pointsScored = 0;
+	}
+
+	private void OnDestroy()
+	{
+		GameManager.Instance.PlayerObject.onTriggerDetected -= ScorePoint;
+		GameManager.Instance.onGameRestart -= RestartPoints;
+		GameManager.Instance.GameEnded -= SetHighScoreIfHigher;
 	}
 }

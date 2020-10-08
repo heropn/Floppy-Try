@@ -5,37 +5,36 @@ using UnityEngine;
 public class UiManager : MonoBehaviour
 {
 	[SerializeField]
-	private ScoreManager scoreManager;
+	private ScoreUI scoreUI;
 	[SerializeField]
 	private RestartScreen restartScreen;
 
 	private void Start()
 	{
-		Player.Instance.onTriggerDetected += PlayerCollide;
-		GameManager.Instance.onGameRestart += RestartGame;
+		GameManager.Instance.PlayerObject.onTriggerDetected += PlayerCollide;
+		GameManager.Instance.onGameRestart += RestartPoints;
 		GameManager.Instance.GameEnded += GameEnd;
 	}
 
 	private void PlayerCollide()
 	{
-		scoreManager.ScorePoint();
+		scoreUI.ScorePoint();
 	}
 
-	private void RestartGame()
+	private void RestartPoints()
 	{
-		scoreManager.RestartPoints();
+		scoreUI.RestartPoints();
 	}
 
 	private void GameEnd()
 	{
-		scoreManager.SetHighScoreIfHigher();
 		restartScreen.SetActiveRestartUI();
 	}
 
 	private void OnDestroy()
 	{
-		Player.Instance.onTriggerDetected -= PlayerCollide;
-		GameManager.Instance.onGameRestart -= RestartGame;
+		GameManager.Instance.PlayerObject.onTriggerDetected -= PlayerCollide;
+		GameManager.Instance.onGameRestart -= RestartPoints;
 		GameManager.Instance.GameEnded -= GameEnd;
 	}
 }

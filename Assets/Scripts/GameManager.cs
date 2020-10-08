@@ -11,6 +11,12 @@ public class GameManager : MonoBehaviour
 	public event Action onGameRestart;
 	public event Action GameEnded;
 
+	[SerializeField]
+	private Player player;
+	public Player PlayerObject { get; private set; }
+
+	public ScoreManager scoreManager { get; private set; }
+
 	[SerializeField] 
 	private int obstaclesOnScreenCount = 10;
 	[SerializeField] 
@@ -46,11 +52,13 @@ public class GameManager : MonoBehaviour
 	private void Awake()
 	{
 		Instance = this;
+		PlayerObject = player;
+		scoreManager = GetComponent<ScoreManager>();
 	}
 
 	private void Start()
 	{
-		Player.Instance.onCollisionDetected += EndGame;
+		player.onCollisionDetected += EndGame;
 		RestartScreen.Instance.onRestartButtonClicked += RestartGame;
 
 		//calculating height and witdh of screen and setting up bottom and top colliders
@@ -154,7 +162,7 @@ public class GameManager : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		Player.Instance.onCollisionDetected -= EndGame;
+		player.onCollisionDetected -= EndGame;
 		RestartScreen.Instance.onRestartButtonClicked -= RestartGame;
 
 		DestroyAllObstacles();

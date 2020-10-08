@@ -1293,6 +1293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 320560015c865f745ab70e9ae822ac72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1582113666}
   obstaclesOnScreenCount: 10
   distanceBetweenObstacles: 5
   obstacleRandomRangeY: 2

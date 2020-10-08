@@ -6,7 +6,6 @@ public class Player : MonoBehaviour
 	[SerializeField] 
 	private float jumpForce = 20.0f;
 
-	public static Player Instance { get; private set; }
 	public event Action onCollisionDetected;
 	public event Action onTriggerDetected;
 
@@ -18,7 +17,6 @@ public class Player : MonoBehaviour
 	private void Awake()
 	{
 		rigidBody = GetComponent<Rigidbody2D>();
-		Instance = this;
 	}
 
 	private void Start()
