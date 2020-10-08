@@ -877,7 +877,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795c8ebbff1be874996875a1b1d6f654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreManager: {fileID: 1617442070}
+  scoreUI: {fileID: 1617442070}
   restartScreen: {fileID: 1013318865}
 --- !u!1 &1235175885
 GameObject:
@@ -1247,7 +1247,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1617442066}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 124b1466c8090d245b3e0215058cb2ef, type: 3}
+  m_Script: {fileID: 11500000, guid: afd910888d9ff9147925f36bb812a910, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1858343059
@@ -1260,6 +1260,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1858343060}
   - component: {fileID: 1858343061}
+  - component: {fileID: 1858343062}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1301,6 +1302,18 @@ MonoBehaviour:
   bottomCameraCollider: {fileID: 1235175887}
   obstaclePrefab: {fileID: 597428695305022507, guid: 4273f09db0eb6b44abfaa8291fc6b841, type: 3}
   obstacleParentTransform: {fileID: 570983352}
+--- !u!114 &1858343062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1858343059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 124b1466c8090d245b3e0215058cb2ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2111731560
 GameObject:
   m_ObjectHideFlags: 0
