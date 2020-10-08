@@ -13,8 +13,6 @@ public class RestartScreen : MonoBehaviour
 	[SerializeField]
 	private TextMeshProUGUI highscoreText;
 
-	private const string highscoreBase = "Highscore: ";
-
 	private void Start()
 	{
 		SetActiveRestartScreen(false);
@@ -22,7 +20,8 @@ public class RestartScreen : MonoBehaviour
 
 	public void SetActiveRestartUI()
 	{
-		highscoreText.text = highscoreBase + GameManager.Instance.ScoreManager.Highscore.ToString();
+		string highscore = GameManager.Instance.ScoreManager.Highscore.ToString();
+		highscoreText.text = $"Highscore: {highscore}";
 		SetActiveRestartScreen(true);
 	}
 

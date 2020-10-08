@@ -21,15 +21,10 @@ public class UiManager : MonoBehaviour
 
 	private void Start()
 	{
-		GameManager.Instance.ScoreManager.onUpdatedScorePoints += UpdateScorePoints;
+		GameManager.Instance.ScoreManager.onUpdatedScorePoints += scoreUI.UpdateScore;
 		GameManager.Instance.GameEnded += GameEnd;
 
 		restartScreen.RestartButton.onClick.AddListener(RestartButtonClicked);
-	}
-
-	private void UpdateScorePoints(int score)
-	{
-		scoreUI.UpdateScore(score);
 	}
 
 	private void RestartButtonClicked()
@@ -46,6 +41,6 @@ public class UiManager : MonoBehaviour
 	private void OnDestroy()
 	{
 		GameManager.Instance.GameEnded -= GameEnd;
-		GameManager.Instance.ScoreManager.onUpdatedScorePoints -= UpdateScorePoints;
+		GameManager.Instance.ScoreManager.onUpdatedScorePoints -= scoreUI.UpdateScore;
 	}
 }
