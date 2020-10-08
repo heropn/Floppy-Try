@@ -7,6 +7,8 @@ public class RestartScreen : MonoBehaviour
 {
 	[SerializeField]
 	private Button restartButton;
+	[SerializeField]
+	private Button exitGameButton;
 
 	public Button RestartButton => restartButton;
 
@@ -15,6 +17,7 @@ public class RestartScreen : MonoBehaviour
 
 	private void Start()
 	{
+		exitGameButton.onClick.AddListener(Application.Quit);
 		SetActiveRestartScreen(false);
 	}
 
@@ -27,6 +30,7 @@ public class RestartScreen : MonoBehaviour
 
 	public void SetActiveRestartScreen(bool value)
 	{
+		exitGameButton.gameObject.SetActive(value);
 		restartButton.gameObject.SetActive(value);
 		highscoreText.gameObject.SetActive(value);
 	}
