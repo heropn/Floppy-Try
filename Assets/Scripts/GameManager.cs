@@ -123,7 +123,10 @@ public class GameManager : MonoBehaviour
 	{
 		obstacles.Remove(obstacle);
 		obstacle.onPassedBorder -= DestroyAndSpawnObstacle;
-		obstacle.Destroy();
+		if(obstacle)
+		{
+			obstacle.Destroy();
+		}
 
 		SpawnObstacles(1);
 	}
@@ -133,7 +136,10 @@ public class GameManager : MonoBehaviour
 		foreach (var obstacle in obstacles)
 		{
 			obstacle.onPassedBorder -= DestroyAndSpawnObstacle;
-			obstacle.Destroy();
+			if (obstacle)
+			{
+				obstacle.Destroy();
+			}
 		}
 		obstacles.Clear();
 	}
