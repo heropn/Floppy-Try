@@ -11,12 +11,19 @@ public class Player : MonoBehaviour
 
 	private Rigidbody2D rigidBody;
 
+	private AudioSource audioSource;
+
 	private bool isPlaying;
 
+	[SerializeField]
+	private AudioClip deathSound;
+	[SerializeField]
+	private AudioClip jumpSound;
 
 	private void Awake()
 	{
 		rigidBody = GetComponent<Rigidbody2D>();
+		audioSource = GetComponent<AudioSource>();
 	}
 
 	private void Start()
@@ -50,10 +57,12 @@ public class Player : MonoBehaviour
 	private void Jump()
 	{
 		rigidBody.velocity = Vector2.up * jumpForce;
+		audioSource.PlayOneShot(jumpSound);
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
+		audioSource.PlayOneShot(deathSound);
 		onCollisionDetected?.Invoke();
 		rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePosition;
 	}
